@@ -1,20 +1,20 @@
 # NUSH Canteen
 
 
-## webserver setup
+## Web Server setup
 
 - Install node modules with `npm install`
 - Start the web server with `sudo node server.js`
 
-(You may autostart this with a cron job or on boot)
+## Queue Analyser setup
 
-## webserver/queueAnalyser setup
-
-NOTE: this should only be done on a device used for tracking queue data.
+NOTE: this should only be done on a device used for perpetually tracking live queue data.
 
 - Install `wireshark`
 - Connect `wlan1` interface in monitor mode
-- Run `startMonitoring` script
+- Run `startMonitoring` script in `queueAnalyser` folder.
 
-(You may autostart this with a cron job or on boot)
+
+
+(You may autostart these with a cron job or on boot)
 
