@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>
+            body, html {
+                height: 100%;
+                margin: 0;
+                font: 400 15px/1.8 "Verdana", sans-serif;
+                color: #555;
+            }
+            body {
+                padding: 20px;
+            }
+            
+            a:link, a:visited {
+                text-decoration: none;
+                color: #0088FF;
+            }
+            
+            a:hover {
+                text-decoration: none;
+                color: #00AAFF;
+            }
+            
+            a:active {
+                color: #0077EE;
+                text-decoration: none;
+            }
+            
+            .code {
+                padding-left: 8px;
+		padding-right: 8px;
+		font-family: 'Courier';
+                background-color: #EEE;
+		color: #333;
+            }
+	    .code .comment {
+	    	color: #777;
+	    }
+            </style>
+    </head>
+    <body>
+        <a href="../">Homepage</a>
+        <h2>NUSH Canteen Queue Length API Documentation</h2>
+	<p>Note: Usage of the API requires knowledge of the server address. As of writing, the server can only be accessed locally on NUS High Network, and that the local IP address changes daily.</p>
+	<br /><hr />
+        <h3>Queue JSON object</h3>
+        <p>A Queue JSON object containing queue information is an object like so: </p>
+	<p class="code">{<br>"time": 1553015000.0000 <span class="comment">/*time of record in seconds since 1970*/</span>,<br>"data_count": 12 <span class="comment">/*number of people in queue*/</span><br>}</p>
+	<br /><hr />
+        <h3>HTTP GET Request URLs</h3>
+	<p>To access to the queue data, you'll need to perform a GET request to one of these URLs.</p>
+	<br />
+        <p class="code">http://&lt;server url&gt;/queueData</p>
+        <p>- Returns a Queue JSON object representing the most recent queue data collected.</p>
+        <br />
+        <p class="code">http://&lt;server url&gt;/recentQueueData?amount=10&amp;order=latestToOldest</p>
+	<p>- <span class="code">amount</span>: maximum amount of queue JSON objects to return. Defaults to <span class="code">Infinity</span> when not provided or that the input value is invalid.<br />- <span class="code">since</span>: the earliest time (in seconds since 1970) of queue data values that should be returned. Defaults to <span class="code">0</span> (i.e. all queue data from any time are acceptable) when not provided or that the input value is invalid.<br />- <span class="code">order</span>: order of values when returned. Defaults to <span class="code">oldestToLatest</span> when not provided or that the input value is invalid.</p> <p>- Returns queue data in an array of Queue JSON objects.</p>
+        <br>
+        <p class="code">http://&lt;server url&gt;/fullQueueData</p>
+	<p>- Returns all queue data in an array of Queue JSON objects. Equivalent to calling <span class="code">/recentQueueData</span>, but without parameters and with slightly faster response times.</p>
+	<p>- <span class="code">order</span>: order of values when returned. Defaults to <span class="code">oldestToLatest</span> when not provided or that the input value is invalid.</p>
+	<br /><hr />
+        <span style="font-size: 10px;">&copy; Wern Jie Lim</span>
+	<br /><br />
+    </body>
+</html>

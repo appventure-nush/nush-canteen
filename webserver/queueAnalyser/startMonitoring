@@ -1,0 +1,10 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+while :
+do
+	#repeatedly calculate the number of people around
+	$DIR/calculateNumberOfPeople --number -a wlan1 -s 30 -o $DIR/data.log -n >/dev/null
+	#$DIR/cleanLogsAndUpdateJson
+done

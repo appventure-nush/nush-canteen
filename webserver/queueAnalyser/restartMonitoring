@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+echo "Killing all previous processes if needed"
+
+kill $(pgrep -f queueAnalyser/startMonitoring) 
+
+sleep 1s
+
+echo "Starting program"
+
+$DIR/startMonitoring > /dev/null &
+
+exit 0

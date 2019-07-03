@@ -1,0 +1,313 @@
+<html>
+	<head>
+		<title>NUSH Canteen Queue Length</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			<style>
+			html {
+				scroll-behavior: smooth;
+			}
+			body, html {
+				height: 100%;
+				margin: 0;
+				font: 400 15px/1.8 "Verdana", sans-serif;
+				color: #777;
+			}
+			
+			a:link, a:visited {
+				text-decoration: none;
+				color: #0088FF;
+			}
+			
+			a:hover {
+				text-decoration: none;
+				color: #00AAFF;
+			}
+			
+			a:active {
+				color: #0077EE;
+				text-decoration: none;
+			}
+			
+			span, p, h1, h2, h3, h4, h5, h6, h7 {
+				padding:5px 15px;
+			}
+			
+			.bgimg {
+				position: relative;
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: cover;
+				
+			}
+			.bgimg {
+				background-image: url("background.jpg");
+				height: 100%;
+			}
+			
+			.full_screen_text {
+				position: relative;
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: cover;
+				margin: 10px;
+				margin-top: 20px;
+			}
+			
+			.caption {
+				position: absolute;
+				left: 0;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 100%;
+				text-align: center;
+				color: #000;
+			}
+		
+			.caption div.container {
+				color: #111;
+				background-color: rgba(240, 240, 240, .8);
+				padding: 10px;
+				font-size: 25px;
+				font-size: 3.5vw;
+				letter-spacing: 3px;
+				letter-spacing: 0.5vw;
+			}
+
+			.caption .large_text {
+				font-size: 50px;
+				font-size: 6vw;
+				letter-spacing: 1.5px;
+				letter-spacing:0.2vw;
+			}
+			
+			.caption .fine_print {
+				color: #eee;
+				font-size: 10px;
+				font-size: 1.6vw;
+				letter-spacing: 2px;
+				letter-spacing: 0.2vw;
+			}
+
+			.bottom_scroll_hint {
+				position: absolute;
+				bottom: 15px;
+				font-size: 10px;
+				transform: translate(-50%,-50%);
+				text-align: center;	
+				left: 50%;
+				background-color: rgba(240,240,240, .7);
+				padding: 15px;
+				border-radius: 10px;	
+			}
+			
+			.semi-header {
+				letter-spacing: 4px;
+				text-transform: uppercase;
+				font: 20px "Lato", sans-serif;
+				color: #111;
+				letter-spacing: 2px;
+			}
+			</style>
+
+			<script>
+			//SMOOTH SCROLLING CODE
+			function currentYPosition() {
+				// Firefox, Chrome, Opera, Safari
+				if (self.pageYOffset) return self.pageYOffset;
+				// Internet Explorer 6 - standards mode
+				if (document.documentElement && document.documentElement.scrollTop)
+					return document.documentElement.scrollTop;
+				// Internet Explorer 6, 7 and 8
+				if (document.body.scrollTop) return document.body.scrollTop;
+					return 0;
+			}
+			function elmYPosition(eID) {
+				var elm = document.getElementById(eID);
+				var y = elm.offsetTop;
+				var node = elm;
+				while (node.offsetParent && node.offsetParent != document.body) {
+					node = node.offsetParent;
+					y += node.offsetTop;
+				} return y;
+			}
+			function smoothScroll(eID) {
+				var startY = currentYPosition();
+				var stopY = elmYPosition(eID);
+				var distance = stopY > startY ? stopY - startY : startY - stopY;
+				if (distance < 100) {
+					scrollTo(0, stopY); return;
+				}
+				var speed = Math.round(distance / 100);
+				if (speed >= 20) speed = 20;
+					var step = Math.round(distance / 25);
+					var leapY = stopY > startY ? startY + step : startY - step;
+					var timer = 0;
+					if (stopY > startY) {
+						for ( var i=startY; i<stopY; i+=step ) {
+							setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+							leapY += step; if (leapY > stopY) leapY = stopY; timer++;
+						} return;
+					}
+					for ( var i=startY; i>stopY; i-=step ) {
+						setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+						leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
+					}
+			}
+			</script>
+	</head>
+	<body>
+		
+		<div class="bgimg">
+			`
+			<div class="caption">
+				<span></span>
+				<div class="container">
+					<b>NUSH CANTEEN QUEUE LENGTH</b>
+					<br>
+					<span id="queueInfo" class="large_text">... ppl (... min wait)</span>
+				</div>
+				<br>
+				<div id="queueInfoStatus" class="fine_print">Javascript needs to be enabled<br>to use this tool.</div>
+			</div>
+		
+
+			<span class="bottom_scroll_hint" onclick="smoothScroll('content')"><img width="24px" height="24px" src="/down.png"></span>
+			<script>
+			window.onscroll = function() {
+				var ratio = (document.body.scrollTop)/Math.min(document.getElementsByClassName('full_screen_text')[0].clientHeight, window.innerHeight);
+				document.getElementsByClassName('bottom_scroll_hint')[0].style.opacity = 1-ratio;
+				document.getElementsByClassName('caption')[0].style.opacity = 1-ratio;
+				document.getElementsByClassName('full_screen_text')[0].style.opacity = ratio;
+			}
+			window.onresize = function() {
+				if (window.innerHeight < 560 && window.innerWidth/window.innerHeight > 1) {
+					document.getElementsByClassName('bottom_scroll_hint')[0].style.display = 'none';
+				} else {
+					document.getElementsByClassName('bottom_scroll_hint')[0].style.display = 'inline';
+				}
+			}	
+			</script>
+		</div>
+		
+		<div id="content" class="full_screen_text">
+		<b><p class="semi-header">NUS High Canteen Queue Length</p></b>
+		
+		<p>This is the live NUS High Canteen Queue Length. Data is collected by a device in the canteen, based on the number of phones detected around the area. It'll then be calculated on a server located within NUS High and then shown on your device, such as this webpage.</p>
+	
+		<p>Mobile apps that allow you to view these data are available. <a href="https://play.google.com/store/apps/details?id=com.limwernjie.schoolwork.nushigh">Download on Android (beta)</a> or <a href="https://testflight.apple.com/join/DuGz5Emd">Download on iOS (beta)</a> as you please.</p>
+		
+		<p>Of course, you would wonder: how does this thing figure out your queue by detecting phones? Well you see, most phones nowadays are smart, and smartphones usually have WiFi. Even when WiFi is not connected, the monitoring device will still be able to receive the WiFi signals sent by your phone to scan for networks. And if your phone is connected to a WiFi network, your phone definitely transmits and receives data through WiFi, right? It'll also be able to detect these signals and therefore know 'someone' is around. Based on the number of phones around, one can reasonably estimate the amount of people around.</p>
+	
+		<p>Hope you like this and find it useful!</p>
+		
+		<br>
+		<br>
+		<br>
+	
+		<hr>
+		<p style="font-size: 10px;">Copyright &copy; Wern Jie Lim (M19403) 2019. <br>All Rights Reserved. <br><a href="https://www.wernjie.com/about-me">About Me</a> | <a href="api">API Documentation</a> </p>
+		
+		</div>
+		
+		<script src="moment.js"></script>
+		<script>
+			const queueInfoElement = document.getElementById("queueInfo");
+			const queueInfoStatusElement = document.getElementById("queueInfoStatus")
+			
+			const queueHttpReq = new XMLHttpRequest();
+			var lastQueueDataDate = null;
+			var lastUpdatedDate = null;
+			var nextUpdatedDate = null;
+			queueHttpReq.onreadystatechange = function() { 
+				if (queueHttpReq.readyState == 4 ) {
+					if (queueHttpReq.status == 200 && queueHttpReq.responseText != "") {
+						var jsonResponse = (queueHttpReq.responseText);
+						console.log(jsonResponse);
+						var json = JSON.parse(jsonResponse);
+
+						var numberOfPeople = parseFloat(json[0].data_count*0.5 + json[1].data_count*0.5).toFixed(0);
+						var numberOfMinWait = (parseFloat(numberOfPeople)*0.73).toFixed(0);
+	
+						queueInfoElement.innerText = numberOfPeople + " ppl (" + numberOfMinWait + " min wait)";
+						lastQueueDataDate = new Date((json[0].time*0.5 + json[1].time*0.5)*1000.0);
+					} else {
+						queueInfoElement.innerText = "Failed to get data.";
+						queueInfoStatusElement.innerText = ":(\n";
+					}
+					lastUpdatedDate = new Date();
+					nextUpdatedDate = new Date(Date.now() + 60*1000);
+
+					startUpdateStatusInterval();
+					var timeout = setTimeout(function () {
+						updateQueueInfo();
+					}, 60*1000);
+
+					queueHttpReq.abort();
+				} else {
+					
+				}
+			}
+	
+			function timeSince(date) {
+
+				var seconds = Math.abs(Math.floor((new Date() - date) / 1000));
+
+				var interval = Math.floor(seconds / 31536000);
+
+				if (interval > 1) {
+					return interval + " years";
+				}
+				interval = Math.floor(seconds / 2592000);
+				if (interval > 1) {
+					return interval + " months";
+				}
+				interval = Math.floor(seconds / 86400);
+				if (interval > 1) {
+					return interval + " days";
+				}
+				interval = Math.floor(seconds / 3600);
+				if (interval > 1) {
+					return interval + " hours";
+				}
+				interval = Math.floor(seconds / 60);
+				if (interval > 1) {
+					return interval + " minutes";
+				}
+				if (seconds > 0) {
+					return Math.floor(seconds) + " seconds";
+				}
+				return "just now";
+			}
+
+			var updateStatusInterval = null;
+			function startUpdateStatusInterval() {
+				if (updateStatusInterval != null) { clearInterval(updateStatusInterval);};
+				var updateStatusMethod;
+				updateStatusInterval = setInterval(updateStatusMethod = function () {
+					if (lastUpdatedDate != null && nextUpdatedDate != null) {
+						if (lastQueueDataDate != null) {
+							queueInfoStatusElement.innerText = "Data shown is as of " + moment(lastQueueDataDate).fromNow(true) + " ago.\nLast refreshed " + moment(lastUpdatedDate).fromNow(true) + " ago, and will refresh in " + timeSince(nextUpdatedDate) + ".";
+						} else {	
+							queueInfoStatusElement.innerText = "Something went wrong loading the data. \nLast refreshed " + moment(lastUpdatedDate).fromNow(true) + " ago, and will refresh in " + timeSince(nextUpdatedDate) + ".";
+						}	
+					} else if (updateStatusInterval != null) {
+						updateStatusInterval.cancel();
+					}
+				}, 1*1000);
+				updateStatusMethod();
+			}
+
+			function updateQueueInfo() {
+				lastQueueDataDate = null;
+				lastUpdatedDate = null;
+				nextUpdatedDate = null;
+				if (updateStatusInterval != null) { clearInterval(updateStatusInterval);};
+				queueInfoStatusElement.innerText = "Updating data.\nPlease wait for a moment.";
+				queueHttpReq.open("GET", "recentQueueData?amount=2" , true);  
+				queueHttpReq.send(null);
+			}
+			updateQueueInfo();
+		</script>
+		
+	</body>
+</html>

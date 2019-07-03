@@ -1,0 +1,22 @@
+#!/usr/bin/python3
+import os
+
+__location__ = os.path.realpath(
+            os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+alist = [line.rstrip() for line in open(os.path.join(__location__,'data.log'))]
+x = "["
+for line in alist:
+    if line[-1:] is not ",":
+        line = line + ","
+    x += line
+
+if x is not "[" and x[-1:] is ",":
+    x = x[:-1]
+
+x += "]"
+
+with open(os.path.join(__location__,'data.json'), 'w') as f:
+    f.write(x)
+
+#print(x)
