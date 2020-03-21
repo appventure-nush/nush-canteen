@@ -1,0 +1,4 @@
+Click==7.0
+netifaces==0.10.9
+pick==0.6.4
+requests==2.23.0

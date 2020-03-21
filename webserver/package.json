@@ -1,11 +1,16 @@
 {
   "name": "canteenQueuePredictor",
   "version": "0.0.0",
-  "description": "",
+  "description": "Server for hosting and predicting canteen queue data.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www",
+    "test": "DEBUG=ui:* nodemon ./bin/www"
   },
   "author": "Wern Jie Lim",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  }
 }

@@ -1,18 +1,37 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const http = require('http');
 const fs = require('fs');
 const url = require("url");
+const crypto = require("crypto");
 
-const port = 80;
 
+const port = 8080;
+
+//Helper methods
 function isInt(value) {
 	  return !isNaN(value) && 
 		         parseInt(Number(value)) == value && 
 		         !isNaN(parseInt(value, 10));
 }
 
-var server = express();
+//Secret key
+// - for receiving queue data from tracker
+var queueDataSecretKey = "<SECRET KEY PLACEHOLDER>";
+fs.readFile(__dirname + '/secretKey', function (err, data) {
+    var readKey = data.toString('utf-8').trim();
+    if (readKey == queueDataSecretKey) {
+        console.log("Warning: secret key is not configured.");
+        queueDataSecretKey= null; //Disallow use of default key
+    } else {
+        queueDataSecretKey = readKey;
+    }
+});
 
+
+//Server stuff
+var server = express();
+server.use(bodyParser.json());
 server.get('/', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
 });
@@ -139,10 +158,48 @@ server.get('/fullQueueData', function(req,res) {
 	});
 });
 
+server.post('/updateQueueData', function(req, res) {
+    if (queueDataSecretKey !== null) {
+        //Retrieve data
+        var givenData = req.body.data_str;
+        var givenWriteMethod = req.body.mode;
+        var givenSignature = req.get('signature');
+
+        //Get signature and verify validity
+        var digest_maker = crypto.createHmac('sha256', queueDataSecretKey);
+        digest_maker.update(givenData);
+        var derivedSignature = digest_maker.digest('hex');
+        if (derivedSignature === givenSignature) { 
+
+            //Verified source as signature is not tampered.
+            var write = givenWriteMethod == "overwrite" ? fs.writeFile : fs.appendFile;
+            write(__dirname + '/queueAnalyser/data.log', givenData, function(err) {
+                if (err) {
+                    console.log(err);
+                    res.statusCode = 500;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify({"status": "error", "reason": err.toString()}));
+                } else {
+                    console.log("Updated queue analyser log.")
+                    res.statusCode = 200;
+        	    	res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify({"status": "success"}));
+                }
+            });
+            return;
+        }
+    }
+
+    //There is no way to verify, or source is invalid.
+    res.statusCode = 403;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({"status": "error", "reason": "access is forbidden"}));
+});
+
 server.listen(port, (err) => {
   if (err) {
-    return console.log('something bad happened', err);
+    return console.log('Oops, something bad happened.', err);
   }
 
-  console.log(`server is listening on ${port}`);
+  console.log(`Server is now listening on ${port}`);
 });
