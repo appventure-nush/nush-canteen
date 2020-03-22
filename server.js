@@ -167,7 +167,7 @@ server.post('/updateQueueData', function(req, res) {
 
         //Get signature and verify validity
         var digest_maker = crypto.createHmac('sha256', queueDataSecretKey);
-        digest_maker.update(givenData);
+        digest_maker.update(givenWriteMethod + givenData);
         var derivedSignature = digest_maker.digest('hex');
         if (derivedSignature === givenSignature) { 
 
