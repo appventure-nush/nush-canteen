@@ -5,13 +5,12 @@ const fs = require('fs');
 const url = require("url");
 const crypto = require("crypto");
 
-
 const port = 8080;
 
 //Helper methods
 function isInt(value) {
-	  return !isNaN(value) && 
-		         parseInt(Number(value)) == value && 
+	  return !isNaN(value) &&
+		         parseInt(Number(value)) == value &&
 		         !isNaN(parseInt(value, 10));
 }
 
@@ -28,10 +27,10 @@ fs.readFile(__dirname + '/secretKey', function (err, data) {
     }
 });
 
-
-//Server stuff
 var server = express();
 server.use(bodyParser.json());
+
+//Static content
 server.get('/', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
 });
@@ -52,6 +51,9 @@ server.get('/down.png', function(req, res) {
 	res.sendFile(__dirname + '/public/down.png');
 });
 
+
+// Public API
+//  - Docs located at /public/api.html
 server.get('/queueData', function (req,res) {
 	fs.readFile(__dirname + '/queueAnalyser/data.log', function (err, data) {
 		if (err) {
@@ -63,7 +65,7 @@ server.get('/queueData', function (req,res) {
 		var lines = data.toString('utf-8').trim().split("\n");
 		var json = lines[lines.length - 1];
 		if (json.slice(-1) == ",") {json = json.substr(0, json.length-1);}
-		
+
 		res.statusCode = 200;
 		res.setHeader('Content-Type', 'application/json');
 		res.end(json);
@@ -116,7 +118,7 @@ server.get('/recentQueueData', function(req,res) {
 		}
 		if (json.slice(-1) == ",") {json = json.substr(0, json.length-1);}
 		json = "[" + json + "]";
-		
+
 		res.statusCode = 200;
 		res.setHeader('Content-Type', 'application/json');
 		res.end(json);
@@ -151,25 +153,55 @@ server.get('/fullQueueData', function(req,res) {
 		}
 		if (json.slice(-1) == ",") {json = json.substr(0, json.length-1);}
 		json = "[" + json + "]";
-		
+
 		res.statusCode = 200;
 		res.setHeader('Content-Type', 'application/json');
 		res.end(json);
 	});
 });
 
+
+// Private API
 server.post('/updateQueueData', function(req, res) {
+    /*
+     * Accepted POST data format:
+     * 
+     * header: 
+     *  {
+     *   ..., 
+     *   'signature': <signature signed using secretKey, and contents being (time + mode + data) string>,
+     *   ...
+     *  }
+     *
+     * body data:
+     *  {
+     *   "data_str" : <data>,
+     *   "mode"     : <write mode>,
+     *   "timestamp": <sec since 1970>
+     *  }
+     *
+     */
     if (queueDataSecretKey !== null) {
         //Retrieve data
         var givenData = req.body.data_str;
         var givenWriteMethod = req.body.mode;
+        var givenTimestamp = req.body.timestamp;
         var givenSignature = req.get('signature');
+
+        if (givenData == null && givenWriteMethod == null && givenTimestamp == null && givenSignature == null) {
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({"status": "error", "reason": "data missing"}));
+            return;
+        }
 
         //Get signature and verify validity
         var digest_maker = crypto.createHmac('sha256', queueDataSecretKey);
-        digest_maker.update(givenWriteMethod + givenData);
+        digest_maker.update(String(givenTimestamp) + givenWriteMethod + givenData);
         var derivedSignature = digest_maker.digest('hex');
-        if (derivedSignature === givenSignature) { 
+
+        //Check if signatures match and if timestamp is within acceptable error of real time
+        if (derivedSignature === givenSignature && Math.abs(givenTimestamp - Date.now()/1000) < 15) { 
 
             //Verified source as signature is not tampered.
             var write = givenWriteMethod == "overwrite" ? fs.writeFile : fs.appendFile;
@@ -180,7 +212,6 @@ server.post('/updateQueueData', function(req, res) {
                     res.setHeader('Content-Type', 'application/json');
                     res.end(JSON.stringify({"status": "error", "reason": err.toString()}));
                 } else {
-                    console.log("Updated queue analyser log.")
                     res.statusCode = 200;
         	    	res.setHeader('Content-Type', 'application/json');
                     res.end(JSON.stringify({"status": "success"}));
