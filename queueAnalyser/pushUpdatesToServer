@@ -4,6 +4,7 @@ import hmac
 import socket
 import struct
 import hashlib
+import datetime
 import requests
 
 def ntpTimestamp(addr='0.de.pool.ntp.org'):
@@ -30,7 +31,8 @@ if __name__ == "__main__":
             queue_data = datafile.read()
 
         mode      = "overwrite"
-        timestamp = int(round(ntpTimestamp()))
+        timestamp = int(round(datetime.datetime.now().timestamp()))
+        #timestamp = int(round(ntpTimestamp()))
 
         digest_maker = hmac.new(secretKey.encode('utf-8'), b'', hashlib.sha256)
         digest_maker.update((str(timestamp) + mode + queue_data).encode('utf-8'))
