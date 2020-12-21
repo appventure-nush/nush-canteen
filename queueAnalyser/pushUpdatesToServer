@@ -18,30 +18,61 @@ def ntpTimestamp(addr='0.de.pool.ntp.org'):
     t -= REF_TIME_1970
     return t
 
+
 if __name__ == "__main__":
     try:
+        #setup
         my_path = os.path.abspath(os.path.dirname(__file__))
         secretKeyPath = os.path.join(my_path, "../secretKey")
         dataLogPath = os.path.join(my_path, "data.log")
+        lastdataLogPath = os.path.join(my_path, "lastdata.log")
 
-        with open(secretKeyPath, 'r') as keyfile:
-            secretKey = keyfile.read().strip()
+        #read key
+        if 'SECRETKEY' not in os.environ:
+            with open(secretKeyPath, 'r') as keyfile:
+                secretKey = keyfile.read().strip()
+                print("Secret key read from file")
+        else:
+            secretKey = os.environ['SECRETKEY']
+            print("Secret key read from env")
 
         with open(dataLogPath, 'r') as datafile:
             queue_data = datafile.read()
 
-        mode      = "overwrite"
-        timestamp = int(round(datetime.datetime.now().timestamp()))
-        #timestamp = int(round(ntpTimestamp()))
+        #configure send type
+        try:
+            mode = "append"
+            with open(lastdataLogPath, 'r') as f:
+                last_sent_line = f.read()
+                if last_sent_line == "overwrite":
+                    mode = "overwrite"
+                    print('Replacing all data on server, overriding all')
+                else:
+                    split_data = queue_data.split("\n")
+                    last_sent_index = split_data.index(last_sent_line)
+                    queue_data = "\n".join(split_data[last_sent_index+1:])
+                    print('Starting from old data, appending new')
+        except (FileNotFoundError, ValueError):
+            mode = "append"
+            print('Old data was saved but not found, appending all')
 
+        timestamp = int(round(datetime.datetime.now().timestamp())) #timestamp = int(round(ntpTimestamp()))
+
+        #sign
         digest_maker = hmac.new(secretKey.encode('utf-8'), b'', hashlib.sha256)
         digest_maker.update((str(timestamp) + mode + queue_data).encode('utf-8'))
         signature = digest_maker.hexdigest()
 
+        #send
         url = 'http://localhost:8080/updateQueueData' #Update this with the relevant domain
         headers = {'content-type': 'application/json', 'signature': signature}
         r = requests.post(url, json={"data_str": queue_data, "mode": mode, "timestamp": timestamp}, headers=headers)
         print("Sent with response:")
         print(r)
+
+        with open(lastdataLogPath, 'w') as f:
+            f.write(queue_data.strip().split('\n')[-1])
+            print("Saved last updated item")
+
     except:
         print("Failed to send")
