@@ -1,23 +1,10 @@
 #!/usr/bin/env python3
+print("Importing...")
 import os
 import hmac
-import socket
-import struct
 import hashlib
 import datetime
 import requests
-
-def ntpTimestamp(addr='0.de.pool.ntp.org'):
-    REF_TIME_1970 = 2208988800 # Reference time
-    client = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
-    data = '\x1b' + 47 * '\0'
-    client.sendto(data.encode(), (addr, 123))
-    data, _ = client.recvfrom(1024)
-    if data:
-        t = struct.unpack( '!12I', data )[10]
-    t -= REF_TIME_1970
-    return t
-
 
 if __name__ == "__main__":
     try:
@@ -59,20 +46,25 @@ if __name__ == "__main__":
         timestamp = int(round(datetime.datetime.now().timestamp())) #timestamp = int(round(ntpTimestamp()))
 
         #sign
+        print("Signing...")
         digest_maker = hmac.new(secretKey.encode('utf-8'), b'', hashlib.sha256)
         digest_maker.update((str(timestamp) + mode + queue_data).encode('utf-8'))
         signature = digest_maker.hexdigest()
 
         #send
+        print("Sending...")
         url = 'http://localhost:8080/updateQueueData' #Update this with the relevant domain
         headers = {'content-type': 'application/json', 'signature': signature}
         r = requests.post(url, json={"data_str": queue_data, "mode": mode, "timestamp": timestamp}, headers=headers)
         print("Sent with response:")
         print(r)
 
-        with open(lastdataLogPath, 'w') as f:
-            f.write(queue_data.strip().split('\n')[-1])
-            print("Saved last updated item")
+        if r.status_code == 200:
+            with open(lastdataLogPath, 'w') as f:
+                f.write(queue_data.strip().split('\n')[-1])
+                print("Saved last updated item")
+        else:
+            print("Something is wrong")
 
     except:
         print("Failed to send")
