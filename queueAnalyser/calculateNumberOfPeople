@@ -9,9 +9,13 @@ import platform
 import subprocess
 import json
 import time
-
 import netifaces
 import click
+
+# can be modified
+# final_count = count_factor * raw_count + count_offset
+COUNT_OFFSET = -20 if 'COUNT_OFFSET' not in os.environ else os.environ['COUNT_OFFSET']
+COUNT_FACTOR = 0.3 if 'COUNT_FACTOR' not in os.environ else os.environ['COUNT_FACTOR']
 
 if os.name != 'nt':
     from pick import pick
@@ -223,8 +227,8 @@ def scan(adapter, scantime, verbose, dictionary, number, nearby, jsonprint, out,
     if verbose:
         print(json.dumps(cellphone_people, indent=2))
     
-    percentage_multiply = 0.27 
-    amount_offset = -20
+    percentage_multiply = COUNT_FACTOR
+    amount_offset = COUNT_OFFSET
     if nocorrection:
         percentage_multiply = 1
         amount_offset = 0

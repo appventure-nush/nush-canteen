@@ -15,7 +15,7 @@ Currently, it runs on a server and allows you to check:
 
 NOTE: this setup should only be done on a device used for perpetually tracking live queue data. The `queueAnalyser` directory can be left alone otherwise, but it's existence is still depended upon by the web server for calculating queue length.
 
-- Install `wireshark`.
+- Install `wireshark` and `tshark`.
 - Install all requirements listed in `requirements.txt` in `queueAnalyser` via `pip3`.
 - Connect `wlan1` interface in monitor mode.
-- Run `startMonitoring` script in `queueAnalyser` folder..
+- Run `startMonitoring` script in `queueAnalyser` folder.
