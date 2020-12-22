@@ -43,6 +43,8 @@ if __name__ == "__main__":
             mode = "append"
             print('Old data was saved but not found, appending all')
 
+        queue_data = "\n".join(queue_data.split("\n")[-200:])
+
         timestamp = int(round(datetime.datetime.now().timestamp())) #timestamp = int(round(ntpTimestamp()))
 
         #sign
