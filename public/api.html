@@ -50,13 +50,13 @@
         <h3>HTTP GET Request URLs</h3>
 	<p>To access to the queue data, you'll need to perform a GET request to one of these URLs.</p>
 	<br />
-        <p class="code">http://&lt;server url&gt;/queueData</p>
+        <p class="code">https://canteen.nush.app/queueData</p>
         <p>- Returns a Queue JSON object representing the most recent queue data collected.</p>
         <br />
-        <p class="code">http://&lt;server url&gt;/recentQueueData?amount=10&amp;order=latestToOldest</p>
+        <p class="code">https://canteen.nush.app/recentQueueData?amount=10&amp;order=latestToOldest</p>
 	<p>- <span class="code">amount</span>: maximum amount of queue JSON objects to return. Defaults to <span class="code">Infinity</span> when not provided or that the input value is invalid.<br />- <span class="code">since</span>: the earliest time (in seconds since 1970) of queue data values that should be returned. Defaults to <span class="code">0</span> (i.e. all queue data from any time are acceptable) when not provided or that the input value is invalid.<br />- <span class="code">order</span>: order of values when returned. Defaults to <span class="code">oldestToLatest</span> when not provided or that the input value is invalid.</p> <p>- Returns queue data in an array of Queue JSON objects.</p>
         <br>
-        <p class="code">http://&lt;server url&gt;/fullQueueData</p>
+        <p class="code">https://canteen.nush.app/fullQueueData</p>
 	<p>- Returns all queue data in an array of Queue JSON objects. Equivalent to calling <span class="code">/recentQueueData</span>, but without parameters and with slightly faster response times.</p>
 	<p>- <span class="code">order</span>: order of values when returned. Defaults to <span class="code">oldestToLatest</span> when not provided or that the input value is invalid.</p>
 	<br /><hr />

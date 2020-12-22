@@ -205,7 +205,7 @@
 		<br>
 	
 		<hr>
-        <p style="font-size: 10px;">Brought to you by AppVenture by NUS High. Created by Wern Jie Lim.<br /><a href="https://appventure.nushigh.edu.sg">AppVenture Homepage</a> | <a href="https://www.wernjie.com/about-me">About Creator</a> | <a href="api">API Documentation</a> </p>
+        <p style="font-size: 10px;">Brought to you by AppVenture by NUS High. Originally created by Wern Jie Lim.<br /><a href="https://nush.app">AppVenture Homepage</a> | <a href="api">API Documentation</a> </p>
 		
 		</div>
 		
@@ -229,7 +229,7 @@
 		    				var numberOfPeople = parseFloat(json[0].data_count*0.5 + json[1].data_count*0.5).toFixed(0);
 	    					var numberOfMinWait = (parseFloat(numberOfPeople)*0.73).toFixed(0);
 	
-    						queueInfoElement.innerText = numberOfPeople + " ppl (" + numberOfMinWait + " min wait)";
+    						queueInfoElement.innerText = numberOfPeople + " ppl ~ " + numberOfMinWait + " min wait";
 						    lastQueueDataDate = new Date((json[0].time*0.5 + json[1].time*0.5)*1000.0);
                         } else {
 						    queueInfoElement.innerText = "Insufficient data.";
@@ -291,10 +291,10 @@
 				updateStatusInterval = setInterval(updateStatusMethod = function () {
 					if (lastUpdatedDate != null && nextUpdatedDate != null) {
 						if (lastQueueDataDate != null) {
-							queueInfoStatusElement.innerText = "Data shown is as of " + moment(lastQueueDataDate).fromNow(true) + " ago.\nLast refreshed " + moment(lastUpdatedDate).fromNow(true) + " ago, and will refresh in " + timeSince(nextUpdatedDate) + ".";
-						} else {	
-							queueInfoStatusElement.innerText = "Something went wrong loading the data. \nLast refreshed " + moment(lastUpdatedDate).fromNow(true) + " ago, and will refresh in " + timeSince(nextUpdatedDate) + ".";
-						}	
+							queueInfoStatusElement.innerText = "Data shown is as of " + moment(lastQueueDataDate).fromNow(true) + " ago.\nWill try to refresh in " + timeSince(nextUpdatedDate) + ".";
+						} else {
+							queueInfoStatusElement.innerText = "Something went wrong loading the data. \nWill try again in " + timeSince(nextUpdatedDate) + ".";
+						}
 					} else if (updateStatusInterval != null) {
 						updateStatusInterval.cancel();
 					}
@@ -308,11 +308,10 @@
 				nextUpdatedDate = null;
 				if (updateStatusInterval != null) { clearInterval(updateStatusInterval);};
 				queueInfoStatusElement.innerText = "Updating data.\nPlease wait for a moment.";
-				queueHttpReq.open("GET", "recentQueueData?amount=2" , true);  
+				queueHttpReq.open("GET", "recentQueueData?amount=5&order=latestToOldest" , true);
 				queueHttpReq.send(null);
 			}
 			updateQueueInfo();
 		</script>
-		
 	</body>
 </html>
