@@ -43,7 +43,7 @@ if __name__ == "__main__":
             mode = "append"
             print('Old data was saved but not found, appending all')
 
-        queue_data = "\n".join(queue_data.split("\n")[-200:])
+        queue_data = "\n".join(queue_data.split("\n")[-200:]).strip()
 
         timestamp = int(round(datetime.datetime.now().timestamp())) #timestamp = int(round(ntpTimestamp()))
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
         print("Sending...")
         url = 'http://localhost:8080/updateQueueData' #Update this with the relevant domain
         headers = {'content-type': 'application/json', 'signature': signature}
-        r = requests.post(url, json={"data_str": queue_data.strip(), "mode": mode, "timestamp": timestamp}, headers=headers)
+        r = requests.post(url, json={"data_str": queue_data, "mode": mode, "timestamp": timestamp}, headers=headers)
         print("Sent with response:")
         print(r)
 
