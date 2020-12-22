@@ -219,11 +219,11 @@ server.post('/updateQueueData', function(req, res) {
         var derivedSignature = digest_maker.digest('hex');
 
         //Check if signatures match and if timestamp is within acceptable error of real time
-        if (derivedSignature === givenSignature && Math.abs(givenTimestamp - Date.now()/1000) < 15) { 
+        if (derivedSignature === givenSignature && Math.abs(givenTimestamp - Date.now()/1000) < 15) {
 
             //Verified source as signature is not tampered.
             var write = givenWriteMethod == "overwrite" ? fs.writeFile : fs.appendFile;
-            write(__dirname + '/queueAnalyser/data.log', givenData, function(err) {
+            write(__dirname + '/queueAnalyser/data.log', "\n" + givenData.trim(), function(err) {
                 if (err) {
                     console.log(err);
                     res.statusCode = 500;

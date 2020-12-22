@@ -35,7 +35,7 @@ if __name__ == "__main__":
                     mode = "overwrite"
                     print('Replacing all data on server, overriding all')
                 else:
-                    split_data = queue_data.split("\n")
+                    split_data = queue_data.strip().split("\n")
                     last_sent_index = split_data.index(last_sent_line)
                     queue_data = "\n".join(split_data[last_sent_index+1:])
                     print('Starting from old data, appending new')
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         print("Sending...")
         url = 'http://localhost:8080/updateQueueData' #Update this with the relevant domain
         headers = {'content-type': 'application/json', 'signature': signature}
-        r = requests.post(url, json={"data_str": queue_data, "mode": mode, "timestamp": timestamp}, headers=headers)
+        r = requests.post(url, json={"data_str": queue_data.strip(), "mode": mode, "timestamp": timestamp}, headers=headers)
         print("Sent with response:")
         print(r)
 
