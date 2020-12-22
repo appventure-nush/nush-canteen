@@ -77,7 +77,7 @@ server.get('/queueData', function (req,res) {
         if (err) {
             res.statusCode = 500;
             res.setHeader('Content-Type', 'application/json');
-            res.end("Queue data could not be found.");
+            res.end("{}");
             return;
         }
         var lines = data.toString('utf-8').trim().split("\n");
@@ -95,7 +95,7 @@ server.get('/recentQueueData', function(req,res) {
         if (err) {
             res.statusCode = 500;
             res.setHeader('Content-Type', 'application/json');
-            res.end("Queue data could not be found.");
+            res.end("[]");
             return;
         }
 
@@ -148,7 +148,7 @@ server.get('/fullQueueData', function(req,res) {
         if (err) {
             res.statusCode = 500;
             res.setHeader('Content-Type', 'application/json');
-            res.end("Queue data could not be found.");
+            res.end("[]");
             return;
         }
 
