@@ -3,7 +3,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 echo "cleaing logs."
-echo "$(tail -10000 $DIR/data.log)" > $DIR/data.log
+echo "$(tail -100 $DIR/data.log)" > $DIR/data.log
 
 echo "writing to json is disabled."
 #$DIR/writeLogsToJson
