@@ -4,8 +4,7 @@
   "description": "Server for hosting and predicting canteen queue data.",
   "main": "server.js",
   "scripts": {
-    "start": "node ./bin/www",
-    "test": "DEBUG=ui:* nodemon ./bin/www"
+    "start": "node ./server.js"
   },
   "author": "Wern Jie Lim",
   "license": "ISC",

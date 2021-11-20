@@ -292,7 +292,7 @@ def scan(adapter, scantime, verbose, dictionary, number, nearby, jsonprint, out,
                 except:
                     f.write(json.dumps({"time": finalRecordedTime, "data_count": num_people, "raw_count": len(cellphone)}) + "\n")
             else:
-                f.write(json.dumps({"time": finalRecordedTime, "data_count": num_people}) + "\n")
+                f.write(json.dumps({"time": finalRecordedTime, "data_count": num_people, "raw_count": len(cellphone)}) + "\n")
         if verbose:
             print("Wrote %d records to %s" % (len(cellphone_people), out))
     if not pcap:
