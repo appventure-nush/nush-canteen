@@ -47,8 +47,8 @@ import netifaces
 import click
 
 # final_count = count_factor * raw_count + count_offset
-COUNT_OFFSET = -20 if 'COUNT_OFFSET' not in os.environ else os.environ['COUNT_OFFSET']
-COUNT_FACTOR = 0.3 if 'COUNT_FACTOR' not in os.environ else os.environ['COUNT_FACTOR']
+COUNT_OFFSET = -20 if 'COUNT_OFFSET' not in os.environ else int(os.environ['COUNT_OFFSET'])
+COUNT_FACTOR = 0.3 if 'COUNT_FACTOR' not in os.environ else int(os.environ['COUNT_FACTOR'])
 
 if os.name != 'nt':
     from pick import pick
