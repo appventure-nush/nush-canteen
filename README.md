@@ -1,10 +1,6 @@
 # NUSH Canteen
 
-A suite of tools related to NUS High School's canteen.
-
-Currently, it runs on a server and allows you to check:
-- Canteen queue length - average no. of people around and wait time
-- [WIP] Stall availability - whether each stall is opened or closed
+Find out the canteen queue length - estimated number of people in the longest queue and wait time necessary to purchase food.
 
 ## Web Server setup & usage
 
